@@ -7,15 +7,34 @@ Practice accessing data by console.log-ing the following pieces of data note.
 
 💡 HINT: You may want to filter the data first 😉*/
 
+const world_cup_2014 = fifaData.filter(function(item){
+    return item.Year === 2014 && item.Stage === "Final"
+})
+
+console.log(world_cup_2014)
+
 //(a) Home Team name for 2014 world cup final
+console.log(world_cup_2014[0]["Home Team Name"])
 
 //(b) Away Team name for 2014 world cup final
 
+console.log(world_cup_2014[0]["Away Team Name"])
+
 //(c) Home Team goals for 2014 world cup final
+
+console.log(world_cup_2014[0]["Home Team Goals"])
 
 //(d) Away Team goals for 2014 world cup final
 
+console.log(world_cup_2014[0]["Away Team Goals"])
+
 //(e) Winner of 2014 world cup final */
+
+if(world_cup_2014[0]["Home Team Goals"] > world_cup_2014[0]["Away Team Goals"]){
+    console.log(world_cup_2014[0]["Home Team Name"])
+}else{
+    console.log(world_cup_2014[0]["Away Team Name"])
+}
 
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 2: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 
@@ -26,11 +45,15 @@ Use getFinals to do the following:
 💡 HINT - you should be looking at the stage key inside of the objects
 */
 
-function getFinals(/* code here */) {
-    /* code here */
+function getFinals(array) {
+    const new_arr = array.filter(function(item){
+        return item.Stage === "Final"
+    })
+
+    return new_arr
  }
 
-
+console.log(getFinals(fifaData))
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 3: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 Use the higher-order function called getYears to do the following: 
@@ -38,11 +61,15 @@ Use the higher-order function called getYears to do the following:
 2. Receive a callback function as the second parameter that will take getFinals from task 2 as an argument
 3. Return an array called years containing all of the years in the getFinals data set*/
 
-function getYears(/* code here */) {
-    /* code here */
+function getYears(array, callback) {
+    const all_years = []
+    callback(array).forEach(function(item){
+        all_years.push(item.Year)
+    })
+    return all_years
 }
 
-
+console.log(getYears(fifaData, getFinals))
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 4: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 Use the higher-order function getWinners to do the following:  
@@ -52,11 +79,19 @@ Use the higher-order function getWinners to do the following:
 💡 HINT: Don't worry about ties for now (Please see the README file for info on ties for a stretch goal.)
 4. Returns the names of all winning countries in an array called `winners` */ 
 
-function getWinners(/* code here */) {
-    /* code here */
+function getWinners(array, callback) {
+    const winners = []
+    callback(array).forEach(function(item){
+        if(item["Home Team Goals"] > item["Away Team Goals"]){
+            winners.push(item["Home Team Name"])
+        }else{
+            winners.push(item["Away Team Name"])
+        }
+    })
+    return winners
 }
 
-
+console.log(getWinners(fifaData, getFinals))
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 5: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 
 Use the higher-order function getWinnersByYear to do the following:
@@ -69,11 +104,18 @@ Use the higher-order function getWinnersByYear to do the following:
 💡 HINT: the strings returned need to exactly match the string in step 4.
  */
 
-function getWinnersByYear(/* code here */) {
-    /* code here */
+function getWinnersByYear(array, callback1, callback2, callback3) {
+    const winners_by_year = []
+    for(let i = 0; i< callback1(array).length; i++ ) {
+        const year = callback2(array, callback1)[i]
+        const country = callback3(array, callback1)[i]
+        winners_by_year.push(`In ${year}, ${country} won the world cup!`)
+    }
+
+    return winners_by_year
 }
 
-
+console.log(getWinnersByYear(fifaData, getFinals, getYears, getWinners))
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 6: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 Use the higher order function getAverageGoals to do the following: 
@@ -88,12 +130,14 @@ Use the higher order function getAverageGoals to do the following:
  
 */
 
-function getAverageGoals(/* code here */) {
-    /* code here */
+function getAverageGoals(callback) {
+    const total_goals = callback.reduce(function(accumulator, current_item){
+        return accumulator + current_item["Home Team Goals"] + current_item["Away Team Goals"]
+    }, 0)
+    return (total_goals / callback.length).toFixed(2)
  }
 
-
-
+console.log(getAverageGoals(getFinals(fifaData)))
 
 /// 🥅 STRETCH 🥅 ///
 
